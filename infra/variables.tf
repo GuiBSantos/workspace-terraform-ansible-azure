@@ -11,7 +11,7 @@ variable "location" {
 }
 
 variable "admin_password" {
-  description = "Senha do usuario admin da VM"
+  description = "Senha do usuario admin da VM Linux"
   type        = string
   sensitive   = true
   default = "SenhaForte123!"

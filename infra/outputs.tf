@@ -25,5 +25,5 @@ output "vm_name" {
 # Usuário administrador da VM
 output "admin_username" {
   value       = azurerm_linux_virtual_machine.vm.admin_username
-  description = "Usuário administrador da VM"
+  description = "Usuário administrador da VM Linux"
 }
