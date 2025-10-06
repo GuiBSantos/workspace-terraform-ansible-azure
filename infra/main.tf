@@ -11,11 +11,13 @@ provider "azurerm" {
   features {}
 }
 
+# Resource Group
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
 
+# Virtual Network
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-automation"
   address_space       = ["10.0.0.0/16"]
@@ -23,6 +25,7 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
+# Subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "subnet-automation"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -30,6 +33,7 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+# Public IP
 resource "azurerm_public_ip" "public_ip" {
   name                = "public-ip-vn"
   location            = azurerm_resource_group.rg.location
@@ -38,6 +42,7 @@ resource "azurerm_public_ip" "public_ip" {
   sku                 = "Standard"
 }
 
+# Network Interface
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
   location            = azurerm_resource_group.rg.location
@@ -51,6 +56,7 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# Network Security Group
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-vm"
   location            = azurerm_resource_group.rg.location
@@ -81,11 +87,13 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+# Associação NIC <-> NSG
 resource "azurerm_network_interface_security_group_association" "nsg_association" {
   network_interface_id      = azurerm_network_interface.nic.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
+# Linux VM
 resource "azurerm_linux_virtual_machine" "vm" {
   name                            = "vm-automation"
   resource_group_name             = azurerm_resource_group.rg.name

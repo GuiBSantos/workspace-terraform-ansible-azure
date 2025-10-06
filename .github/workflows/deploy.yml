@@ -74,9 +74,9 @@ jobs:
         run: |
           echo "vm_name=$(terraform output -raw vm_name)" >> $GITHUB_OUTPUT
           echo "admin_username=$(terraform output -raw admin_username)" >> $GITHUB_OUTPUT
-          echo "public_ip=$(terraform output -raw public_ip_address)" >> $GITHUB_OUTPUT
+          echo "public_ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
           echo "nsg_name=$(terraform output -raw nsg_name)" >> $GITHUB_OUTPUT
-          echo "resource_group=$(terraform output -raw resource_group_name)" >> $GITHUB_OUTPUT
+          echo "resource_group=$(terraform output -raw resource_group)" >> $GITHUB_OUTPUT
 
       - name: Definir variaveis
         run: |
