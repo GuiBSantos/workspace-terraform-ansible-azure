@@ -9,15 +9,21 @@ terraform {
 
 provider "azurerm" {
   features {}
+  subscription_id = var.subscription_id
+  tenant_id       = var.tenant_id
 }
 
+# =========================
 # Resource Group
+# =========================
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
 
-# Virtual Network
+# =========================
+# Virtual Network e Subnet
+# =========================
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-automation"
   address_space       = ["10.0.0.0/16"]
@@ -25,7 +31,6 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.rg.name
 }
 
-# Subnet
 resource "azurerm_subnet" "subnet" {
   name                 = "subnet-automation"
   resource_group_name  = azurerm_resource_group.rg.name
@@ -33,7 +38,9 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+# =========================
 # Public IP
+# =========================
 resource "azurerm_public_ip" "public_ip" {
   name                = "public-ip-vn"
   location            = azurerm_resource_group.rg.location
@@ -42,7 +49,9 @@ resource "azurerm_public_ip" "public_ip" {
   sku                 = "Standard"
 }
 
+# =========================
 # Network Interface
+# =========================
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
   location            = azurerm_resource_group.rg.location
@@ -56,7 +65,9 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# =========================
 # Network Security Group
+# =========================
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-vm"
   location            = azurerm_resource_group.rg.location
@@ -93,7 +104,9 @@ resource "azurerm_network_interface_security_group_association" "nsg_association
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
+# =========================
 # Linux VM
+# =========================
 resource "azurerm_linux_virtual_machine" "vm" {
   name                            = "vm-automation"
   resource_group_name             = azurerm_resource_group.rg.name
@@ -120,4 +133,19 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-# Extensao para permitir SSH
+# =========================
+# Extensão para permitir SSH (Custom Script)
+# =========================
+resource "azurerm_virtual_machine_extension" "ssh_extension" {
+  name                 = "enable-ssh"
+  virtual_machine_id   = azurerm_linux_virtual_machine.vm.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  settings = <<SETTINGS
+    {
+      "commandToExecute": "echo 'SSH habilitado com sucesso'"
+    }
+SETTINGS
+}
