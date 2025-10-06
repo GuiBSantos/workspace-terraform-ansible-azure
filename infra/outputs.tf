@@ -13,4 +13,14 @@ output "resource_group_name" {
   description = "Nome do Grupo de Recursos"
 }
 
+output "vm_name" {
+  value       = azurerm_linux_virtual_machine.vm.name
+  description = "Nome da VM"
+}
+
+output "admin_username" {
+  value       = azurerm_linux_virtual_machine.vm.admin_username
+  description = "Usuário administrador da VM"
+}
+
 
